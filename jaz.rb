@@ -1,7 +1,7 @@
 # Documentation: https://docs.brew.sh/Formula-Cookbook
 #                https://rubydoc.brew.sh/Formula
 # PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
-class jaz < Formula
+class Jaz < Formula
   desc "Find secrets hidden in commits"
   homepage ""
   url "https://github.com/jonaylor89/JAZ/archive/v0.1.0.tar.gz"
