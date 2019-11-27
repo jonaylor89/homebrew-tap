@@ -5,7 +5,7 @@ class Jaz < Formula
   desc "Find secrets hidden in commits"
   homepage ""
   url "https://github.com/jonaylor89/JAZ/archive/v0.0.2.tar.gz"
-  sha256 "419103745eed49d537f3e73370d3274f0259b00c33ebc34af69eefdc70a48a8e"
+  sha256 "2474927a922c5e913d65473fd0f850eb09e8f6efaa5d553b99d6aa095f479054"
 
   depends_on "rust" => :build
 
