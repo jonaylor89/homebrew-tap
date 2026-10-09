@@ -1,0 +1,61 @@
+name: Update Mino cask
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-mino
+  cancel-in-progress: false
+
+jobs:
+  update:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Install pinned Jujutsu
+        run: |
+          curl --fail --location --retry 3 \
+            https://github.com/jj-vcs/jj/releases/download/v0.37.0/jj-v0.37.0-x86_64-unknown-linux-musl.tar.gz \
+            --output "$RUNNER_TEMP/jj.tar.gz"
+          echo "7fd8e28d65106768054becbc1e0b929bed7c4c963d598f9f9a629bfa92eb7171  $RUNNER_TEMP/jj.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/jj"
+          tar -xzf "$RUNNER_TEMP/jj.tar.gz" -C "$RUNNER_TEMP/jj"
+          echo "$RUNNER_TEMP/jj" >> "$GITHUB_PATH"
+
+      - name: Clone tap with Jujutsu
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          jj config set --user user.name 'github-actions[bot]'
+          jj config set --user user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          gh auth setup-git
+          jj git clone --config git.subprocess=true "https://github.com/$GITHUB_REPOSITORY.git" tap
+
+      - name: Test release updater
+        working-directory: tap
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Check public release and verify DMG
+        id: release
+        working-directory: tap
+        run: python3 scripts/update-mino.py
+
+      - name: Commit and push updated cask with Jujutsu
+        if: steps.release.outputs.changed == 'true'
+        working-directory: tap
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          jj describe -m "chore(cask): update Mino to $VERSION"
+          jj bookmark move main --to @
+          jj status
+          jj git push --bookmark main
