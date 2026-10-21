@@ -1,15 +1,16 @@
 cask "fuego" do
-  version "1.0.0"
-  sha256 "71b7279e4b49e1c1db89edf749f2edb5f382e52f0acef2071c7cde37148383f2"
+  version "1.0.1"
+  sha256 "9da67027584d309a8ec1242209c6cb8a2861251e021f74a9f25a93904f5baf71"
 
-  url "https://github.com/jonaylor89/Fuego/releases/download/v#{version}/Fuego-#{version}.dmg"
+  url "https://github.com/jonaylor89/jonaylor.com/releases/download/fuego-v#{version}/Fuego-#{version}.dmg",
+      verified: "github.com/jonaylor89/jonaylor.com/"
   name "Fuego"
   desc "Menu bar focus timer that blocks distracting websites and apps"
   homepage "https://getfuego.dev/"
 
   livecheck do
-    url :url
-    strategy :github_latest
+    url "https://downloads.jonaylor.com/fuego/appcast.xml"
+    strategy :sparkle
   end
 
   depends_on macos: :sequoia
