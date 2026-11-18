@@ -1,6 +1,6 @@
 cask "mino" do
-  version "0.1.15"
-  sha256 "c8080eac161795a94142e1256113f40cfc12444465aba846c5a6338c50037c6d"
+  version "0.1.16"
+  sha256 "e5b27603fe1e29bf02e79537134739876faa2ad60d8b2d73ece69ce51695511a"
 
   url "https://artifacts.mino.so/releases/v#{version}/Mino-#{version}.dmg"
   name "Mino"
